@@ -1,0 +1,58 @@
+# Multi-Row Subquery
+
+CREATE TABLE students (
+    studentname VARCHAR(50),
+    subject VARCHAR(50),
+    mark INT
+);
+
+INSERT INTO students (studentname, subject, mark) VALUES
+('Arun', 'Tamil', 85),
+('Arun', 'English', 78),
+('Arun', 'Maths', 92),
+('Arun', 'Science', 88),
+('Divya', 'Tamil', 74),
+('Divya', 'Social', 90);
+
+SELECT studentname, subject, mark 
+FROM students 
+WHERE subject IN (
+    SELECT DISTINCT subject 
+    FROM students 
+    WHERE subject IN ('Tamil', 'English', 'Maths')
+);
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Foreign Key Constraint
+
+CREATE TABLE Manager_Details (
+    Manager_ID INT PRIMARY KEY,
+    ManagerName VARCHAR(50),
+    Dep VARCHAR(50)
+);
+
+CREATE TABLE Employee_Details (
+    Empid INT PRIMARY KEY,
+    empName VARCHAR(50),
+    Dep VARCHAR(50),
+    Manager_ID INT,
+    FOREIGN KEY (Manager_ID) REFERENCES Manager_Details(Manager_ID)
+);
+
+INSERT INTO Manager_Details (Manager_ID, ManagerName, Dep) VALUES
+(101, 'Karthik Raja', 'Analytics'),
+(102, 'Priya Mani', 'IT Development');
+
+INSERT INTO Employee_Details (Empid, empName, Dep, Manager_ID) VALUES
+(1, 'Santhosh', 'Analytics', 101),
+(2, 'Deepika', 'Analytics', 101),
+(3, 'Naveen', 'IT Development', 102);
+
+SELECT 
+    e.Empid, 
+    e.empName AS Employee_Name, 
+    e.Dep AS Department, 
+    m.ManagerName AS Manager_Name
+FROM Employee_Details e
+INNER JOIN Manager_Details m ON e.Manager_ID = m.Manager_ID;
